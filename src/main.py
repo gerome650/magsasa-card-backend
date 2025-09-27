@@ -24,9 +24,9 @@ def create_app():
     app.config['SECRET_KEY'] = 'magsasa-card-enhanced-platform-2024'
     app.config['DATABASE_URL'] = 'src/database/dynamic_pricing.db'
     
-    # Register blueprints with URL prefixes
-    app.register_blueprint(dynamic_pricing_bp, url_prefix='/api')
-    app.register_blueprint(order_processing_bp, url_prefix='/api')
+    # Register blueprints (routes already have /api prefix)
+    app.register_blueprint(dynamic_pricing_bp)
+    app.register_blueprint(order_processing_bp)
     
     # Root endpoint
     @app.route('/')
