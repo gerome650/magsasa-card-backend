@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgriTech Access Control System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            width: 100%;
+            max-width: 1200px;
+            margin: 20px;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #00C805 0%, #00A004 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .auth-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .auth-form {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 15px;
+            border: 1px solid #e9ecef;
+        }
+
+        .auth-form h3 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 1.3rem;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+            font-weight: 500;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: #00C805;
+        }
+
+        .btn {
+            background: #00C805;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            width: 100%;
+        }
+
+        .btn:hover {
+            background: #00A004;
+        }
+
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .feature-card {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 15px;
+            border-left: 4px solid #00C805;
+        }
+
+        .feature-card h4 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+        }
+
+        .feature-card p {
+            color: #666;
+            line-height: 1.6;
+        }
+
+        .api-section {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+        }
+
+        .api-section h3 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .endpoint {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            border-left: 4px solid #00C805;
+        }
+
+        .endpoint code {
+            background: #e9ecef;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Monaco', 'Menlo', monospace;
+        }
+
+        .status {
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 10px;
+            display: none;
+        }
+
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .user-info {
+            background: #e8f5e8;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            display: none;
+        }
+
+        .credentials {
+            background: #fff3cd;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            border: 1px solid #ffeaa7;
+        }
+
+        .credentials h4 {
+            color: #856404;
+            margin-bottom: 15px;
+        }
+
+        .credential-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-family: monospace;
+        }
+
+        @media (max-width: 768px) {
+            .auth-section {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .container {
+                margin: 10px;
+            }
+            
+            .content {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🌾 AgriTech Access Control</h1>
+            <p>Comprehensive Multi-tenant Authentication & Authorization System</p>
+        </div>
+
+        <div class="content">
+            <div class="credentials">
+                <h4>🔑 Demo Login Credentials</h4>
+                <div class="credential-item">
+                    <span><strong>Super Admin:</strong></span>
+                    <span>superadmin / SuperAdmin123!</span>
+                </div>
+                <div class="credential-item">
+                    <span><strong>Admin:</strong></span>
+                    <span>admin1 / Admin123!</span>
+                </div>
+                <div class="credential-item">
+                    <span><strong>Manager:</strong></span>
+                    <span>manager1 / Manager123!</span>
+                </div>
+                <div class="credential-item">
+                    <span><strong>Field Officer:</strong></span>
+                    <span>field_officer1 / Field123!</span>
+                </div>
+                <div class="credential-item">
+                    <span><strong>Farmer:</strong></span>
+                    <span>farmer1 / Farmer123!</span>
+                </div>
+            </div>
+
+            <div class="auth-section">
+                <div class="auth-form">
+                    <h3>🔐 Login</h3>
+                    <form id="loginForm">
+                        <div class="form-group">
+                            <label for="loginUsername">Username</label>
+                            <input type="text" id="loginUsername" name="username" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="loginPassword">Password</label>
+                            <input type="password" id="loginPassword" name="password" required>
+                        </div>
+                        <button type="submit" class="btn">Login</button>
+                    </form>
+                    <div id="loginStatus" class="status"></div>
+                    <div id="userInfo" class="user-info"></div>
+                </div>
+
+                <div class="auth-form">
+                    <h3>📝 Register New User</h3>
+                    <form id="registerForm">
+                        <div class="form-group">
+                            <label for="regUsername">Username</label>
+                            <input type="text" id="regUsername" name="username" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="regEmail">Email</label>
+                            <input type="email" id="regEmail" name="email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="regPassword">Password</label>
+                            <input type="password" id="regPassword" name="password" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="regFirstName">First Name</label>
+                            <input type="text" id="regFirstName" name="first_name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="regLastName">Last Name</label>
+                            <input type="text" id="regLastName" name="last_name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="regRole">Role</label>
+                            <select id="regRole" name="role" required>
+                                <option value="">Select Role</option>
+                                <option value="farmer">Farmer</option>
+                                <option value="field_officer">Field Officer</option>
+                                <option value="manager">Manager</option>
+                                <option value="admin">Admin</option>
+                                <option value="input_supplier">Input Supplier</option>
+                                <option value="logistics_partner">Logistics Partner</option>
+                                <option value="financial_partner">Financial Partner</option>
+                                <option value="buyer_processor">Buyer/Processor</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="regOrganization">Organization</label>
+                            <select id="regOrganization" name="organization_id" required>
+                                <option value="">Select Organization</option>
+                                <option value="1">AgriTech Main Organization</option>
+                                <option value="2">Green Valley Farms</option>
+                                <option value="3">AgriSupply Co.</option>
+                                <option value="4">FastLogistics</option>
+                                <option value="5">AgriFinance Bank</option>
+                                <option value="6">Harvest Processors</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn">Register</button>
+                    </form>
+                    <div id="registerStatus" class="status"></div>
+                </div>
+            </div>
+
+            <div class="features">
+                <div class="feature-card">
+                    <h4>🔒 Multi-tenant Security</h4>
+                    <p>Complete data isolation between organizations with role-based access control across 9 distinct user types.</p>
+                </div>
+                <div class="feature-card">
+                    <h4>🎯 Role-Based Permissions</h4>
+                    <p>Granular permission system supporting administrative, operational, and partner tiers with 98+ predefined permissions.</p>
+                </div>
+                <div class="feature-card">
+                    <h4>🛡️ Advanced Security</h4>
+                    <p>JWT authentication, password policies, account lockout protection, and comprehensive audit logging.</p>
+                </div>
+                <div class="feature-card">
+                    <h4>🤝 Partner Integration</h4>
+                    <p>Dedicated support for input suppliers, logistics partners, financial institutions, and buyers/processors.</p>
+                </div>
+            </div>
+
+            <div class="api-section">
+                <h3>🔗 API Endpoints</h3>
+                <div class="endpoint">
+                    <strong>Health Check:</strong> <code>GET /api/health</code>
+                    <button onclick="testEndpoint('/api/health', 'GET')" class="btn" style="width: auto; margin-left: 10px; padding: 5px 15px;">Test</button>
+                </div>
+                <div class="endpoint">
+                    <strong>API Documentation:</strong> <code>GET /api/docs</code>
+                    <button onclick="testEndpoint('/api/docs', 'GET')" class="btn" style="width: auto; margin-left: 10px; padding: 5px 15px;">Test</button>
+                </div>
+                <div class="endpoint">
+                    <strong>Get Roles:</strong> <code>GET /api/roles</code> (Requires Authentication)
+                    <button onclick="testEndpoint('/api/roles', 'GET', true)" class="btn" style="width: auto; margin-left: 10px; padding: 5px 15px;">Test</button>
+                </div>
+                <div class="endpoint">
+                    <strong>User Profile:</strong> <code>GET /api/auth/profile</code> (Requires Authentication)
+                    <button onclick="testEndpoint('/api/auth/profile', 'GET', true)" class="btn" style="width: auto; margin-left: 10px; padding: 5px 15px;">Test</button>
+                </div>
+                <div id="apiTestResult" class="status"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let authToken = null;
+
+        // Login form handler
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            const data = Object.fromEntries(formData);
+            
+            try {
+                const response = await fetch('/api/auth/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                });
+                
+                const result = await response.json();
+                const statusDiv = document.getElementById('loginStatus');
+                
+                if (response.ok) {
+                    authToken = result.access_token;
+                    statusDiv.className = 'status success';
+                    statusDiv.style.display = 'block';
+                    statusDiv.textContent = 'Login successful!';
+                    
+                    // Show user info
+                    const userInfoDiv = document.getElementById('userInfo');
+                    userInfoDiv.style.display = 'block';
+                    userInfoDiv.innerHTML = `
+                        <h4>Welcome, ${result.user.first_name} ${result.user.last_name}!</h4>
+                        <p><strong>Username:</strong> ${result.user.username}</p>
+                        <p><strong>Email:</strong> ${result.user.email}</p>
+                        <p><strong>Status:</strong> ${result.user.status}</p>
+                        <p><strong>Organizations:</strong> ${result.user.organizations.length}</p>
+                        <button onclick="logout()" class="btn" style="margin-top: 10px;">Logout</button>
+                    `;
+                } else {
+                    statusDiv.className = 'status error';
+                    statusDiv.style.display = 'block';
+                    statusDiv.textContent = result.error || 'Login failed';
+                }
+            } catch (error) {
+                const statusDiv = document.getElementById('loginStatus');
+                statusDiv.className = 'status error';
+                statusDiv.style.display = 'block';
+                statusDiv.textContent = 'Network error: ' + error.message;
+            }
+        });
+
+        // Register form handler
+        document.getElementById('registerForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            const data = Object.fromEntries(formData);
+            
+            try {
+                const response = await fetch('/api/auth/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                });
+                
+                const result = await response.json();
+                const statusDiv = document.getElementById('registerStatus');
+                
+                if (response.ok) {
+                    statusDiv.className = 'status success';
+                    statusDiv.style.display = 'block';
+                    statusDiv.textContent = 'Registration successful! Please verify your email.';
+                    e.target.reset();
+                } else {
+                    statusDiv.className = 'status error';
+                    statusDiv.style.display = 'block';
+                    statusDiv.textContent = result.error || 'Registration failed';
+                }
+            } catch (error) {
+                const statusDiv = document.getElementById('registerStatus');
+                statusDiv.className = 'status error';
+                statusDiv.style.display = 'block';
+                statusDiv.textContent = 'Network error: ' + error.message;
+            }
+        });
+
+        // Test API endpoints
+        async function testEndpoint(endpoint, method, requiresAuth = false) {
+            try {
+                const headers = {
+                    'Content-Type': 'application/json',
+                };
+                
+                if (requiresAuth) {
+                    if (!authToken) {
+                        showApiResult('Please login first to test authenticated endpoints', 'error');
+                        return;
+                    }
+                    headers['Authorization'] = `Bearer ${authToken}`;
+                }
+                
+                const response = await fetch(endpoint, {
+                    method: method,
+                    headers: headers
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok) {
+                    showApiResult(`✅ ${endpoint} - Success: ${JSON.stringify(result, null, 2)}`, 'success');
+                } else {
+                    showApiResult(`❌ ${endpoint} - Error: ${result.error || 'Unknown error'}`, 'error');
+                }
+            } catch (error) {
+                showApiResult(`❌ ${endpoint} - Network Error: ${error.message}`, 'error');
+            }
+        }
+
+        function showApiResult(message, type) {
+            const resultDiv = document.getElementById('apiTestResult');
+            resultDiv.className = `status ${type}`;
+            resultDiv.style.display = 'block';
+            resultDiv.innerHTML = `<pre>${message}</pre>`;
+        }
+
+        function logout() {
+            authToken = null;
+            document.getElementById('userInfo').style.display = 'none';
+            document.getElementById('loginStatus').style.display = 'none';
+            document.getElementById('loginForm').reset();
+            showApiResult('Logged out successfully', 'success');
+        }
+
+        // Auto-fill demo credentials
+        function fillDemoCredentials(username, password) {
+            document.getElementById('loginUsername').value = username;
+            document.getElementById('loginPassword').value = password;
+        }
+
+        // Add click handlers for credential items
+        document.addEventListener('DOMContentLoaded', () => {
+            const credentials = [
+                ['superadmin', 'SuperAdmin123!'],
+                ['admin1', 'Admin123!'],
+                ['manager1', 'Manager123!'],
+                ['field_officer1', 'Field123!'],
+                ['farmer1', 'Farmer123!']
+            ];
+
+            const credentialItems = document.querySelectorAll('.credential-item');
+            credentialItems.forEach((item, index) => {
+                if (index < credentials.length) {
+                    item.style.cursor = 'pointer';
+                    item.title = 'Click to auto-fill login form';
+                    item.addEventListener('click', () => {
+                        fillDemoCredentials(credentials[index][0], credentials[index][1]);
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
