@@ -24,6 +24,24 @@ def create_app():
     app.config['DATABASE_PATH'] = 'src/database/dynamic_pricing.db'
     
     # Import and register blueprints
+    
+    # Health endpoints (always available)
+    try:
+        from src.routes.health import health_bp
+        app.register_blueprint(health_bp)
+        print("✅ Health blueprint registered")
+    except ImportError as e:
+        print(f"❌ Failed to import health blueprint: {e}")
+    
+    # Basic API endpoints (always available)
+    try:
+        from src.routes.api import api_bp
+        app.register_blueprint(api_bp)
+        print("✅ API blueprint registered")
+    except ImportError as e:
+        print(f"❌ Failed to import API blueprint: {e}")
+    
+    # Dynamic pricing (optional)
     try:
         from src.routes.dynamic_pricing import dynamic_pricing_bp
         app.register_blueprint(dynamic_pricing_bp)
@@ -31,6 +49,7 @@ def create_app():
     except ImportError as e:
         print(f"❌ Failed to import dynamic pricing blueprint: {e}")
     
+    # KaAni integration (optional)
     try:
         from src.routes.kaani_routes import kaani_bp
         app.register_blueprint(kaani_bp)
