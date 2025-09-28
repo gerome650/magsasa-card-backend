@@ -21,7 +21,7 @@ google-generativeai==0.3.0
 # psycopg2-binary==2.9.7
 
 # Data Processing
-pandas==2.1.0
+pandas==2.0.3
 numpy==1.24.3
 
 # HTTP Requests
