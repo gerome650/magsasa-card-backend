@@ -10,11 +10,12 @@
       "last_deployed": "2025-09-28"
     },
     "staging": {
-      "status": "ready_to_deploy",
+      "status": "deploying",
       "provider": "render",
       "url": "pending_deployment",
       "database": "postgresql",
-      "render_service": "magsasa-card-staging"
+      "render_service": "magsasa-card-staging",
+      "last_deployed": "2025-09-28"
     },
     "production": {
       "status": "planned",
