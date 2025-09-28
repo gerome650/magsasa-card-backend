@@ -1,0 +1,114 @@
+# MAGSASA-CARD Platform - Render Deployment Configuration
+# Staging Environment Configuration
+
+services:
+  # Main API Service
+  - type: web
+    name: magsasa-card-api-staging
+    env: python
+    plan: starter  # Free tier for staging
+    buildCommand: |
+      pip install --upgrade pip
+      pip install -r requirements_production.txt
+    startCommand: gunicorn --bind 0.0.0.0:$PORT app_production:app --workers 2 --timeout 120
+    envVars:
+      - key: ENVIRONMENT
+        value: staging
+      - key: FLASK_ENV
+        value: production
+      - key: FLASK_DEBUG
+        value: false
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DATABASE_TYPE
+        value: sqlite
+      - key: DATABASE_PATH
+        value: /opt/render/project/src/database/dynamic_pricing.db
+      - key: ALLOWED_ORIGINS
+        value: "*"  # Configure specific origins in production
+      - key: OPENAI_API_KEY
+        sync: false  # Set manually in Render dashboard
+      - key: GOOGLE_AI_API_KEY
+        sync: false  # Set manually in Render dashboard
+      - key: LOG_LEVEL
+        value: INFO
+      - key: PYTHONPATH
+        value: /opt/render/project/src
+    
+    # Health check configuration
+    healthCheckPath: /health
+    
+    # Auto-deploy configuration
+    autoDeploy: true
+    
+    # Build settings
+    buildFilter:
+      paths:
+        - app_production.py
+        - requirements_production.txt
+        - src/**
+        - deployment/render/**
+      ignoredPaths:
+        - README.md
+        - docs/**
+        - tests/**
+        - .git/**
+    
+    # Disk storage for SQLite (staging only)
+    disk:
+      name: magsasa-staging-data
+      mountPath: /opt/render/project/data
+      sizeGB: 1
+
+  # Background Worker (if needed for future features)
+  - type: worker
+    name: magsasa-card-worker-staging
+    env: python
+    plan: starter
+    buildCommand: |
+      pip install --upgrade pip
+      pip install -r requirements_production.txt
+    startCommand: python worker.py  # Create this file if background tasks are needed
+    envVars:
+      - key: ENVIRONMENT
+        value: staging
+      - key: WORKER_TYPE
+        value: background_tasks
+      - key: DATABASE_TYPE
+        value: sqlite
+      - key: DATABASE_PATH
+        value: /opt/render/project/src/database/dynamic_pricing.db
+    
+    # Only deploy worker if worker.py exists
+    buildFilter:
+      paths:
+        - worker.py
+        - requirements_production.txt
+        - src/**
+
+# Database Configuration (for future PostgreSQL migration)
+databases:
+  - name: magsasa-card-db-staging
+    databaseName: magsasa_card_staging
+    user: magsasa_user
+    plan: free  # Free PostgreSQL tier
+    # Uncomment when ready to migrate from SQLite
+    # region: oregon
+
+# Static Site (for future frontend deployment)
+# - type: static
+#   name: magsasa-card-frontend-staging
+#   buildCommand: npm run build
+#   staticPublishPath: ./build
+#   envVars:
+#     - key: REACT_APP_API_URL
+#       value: https://magsasa-card-api-staging.onrender.com
+
+# Environment-specific notes:
+# 1. This configuration is for STAGING environment
+# 2. Uses SQLite for simplicity in staging
+# 3. Free tier resources for cost efficiency
+# 4. Auto-deploy enabled for continuous integration
+# 5. Health checks configured for monitoring
+# 6. Environment variables need to be set in Render dashboard
+# 7. Ready for PostgreSQL migration when needed
