@@ -16,9 +16,17 @@ class OpenAIProvider:
         """Initialize OpenAI provider with API key and configuration"""
         self.api_key = os.getenv('OPENAI_API_KEY')
         if not self.api_key:
-            raise ValueError("OPENAI_API_KEY environment variable not set")
+            # For development, we can work without API key
+            self.client = None
+            self.model = "gpt-4o-mini"
+            return
         
-        self.client = openai.OpenAI(api_key=self.api_key)
+        try:
+            self.client = openai.OpenAI(api_key=self.api_key)
+        except Exception as e:
+            # Fallback for development environment
+            print(f"Warning: OpenAI client initialization failed: {e}")
+            self.client = None
         self.model = "gpt-4.1-mini"  # Supported model for agricultural analysis
         
         # Agricultural diagnosis system prompt
@@ -261,6 +269,13 @@ Recommend the most suitable products for this farmer's situation. Return JSON fo
     
     def test_connection(self) -> Dict:
         """Test OpenAI API connection and model availability"""
+        if not self.client:
+            return {
+                "status": "disabled",
+                "message": "OpenAI client not initialized (API key not provided)",
+                "timestamp": datetime.utcnow().isoformat()
+            }
+            
         try:
             response = self.client.chat.completions.create(
                 model=self.model,
