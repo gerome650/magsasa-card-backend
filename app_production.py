@@ -113,6 +113,26 @@ def create_app():
     # Import and register blueprints with error handling
     blueprints_status = {}
     
+    # Health endpoints (always available)
+    try:
+        from src.routes.health import health_bp
+        app.register_blueprint(health_bp)
+        blueprints_status['health'] = 'registered'
+        app.logger.info("✅ Health blueprint registered")
+    except ImportError as e:
+        blueprints_status['health'] = f'failed: {str(e)}'
+        app.logger.error(f"❌ Failed to import health blueprint: {e}")
+    
+    # Basic API endpoints (always available)
+    try:
+        from src.routes.api import api_bp
+        app.register_blueprint(api_bp)
+        blueprints_status['api'] = 'registered'
+        app.logger.info("✅ API blueprint registered")
+    except ImportError as e:
+        blueprints_status['api'] = f'failed: {str(e)}'
+        app.logger.error(f"❌ Failed to import API blueprint: {e}")
+    
     try:
         from src.routes.dynamic_pricing import dynamic_pricing_bp
         app.register_blueprint(dynamic_pricing_bp)
