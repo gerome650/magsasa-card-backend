@@ -1,0 +1,314 @@
+{
+  "notion_integration": {
+    "project_name": "MAGSASA-CARD AgriTech Platform",
+    "integration_version": "1.0.0",
+    "setup_date": "2025-09-28T12:52:00Z",
+    "databases": {
+      "deployment_tracking": {
+        "name": "MAGSASA-CARD Deployment Tracker",
+        "description": "Tracks deployment status across all environments",
+        "properties": {
+          "Environment": {
+            "type": "select",
+            "options": ["Development", "Staging", "Production"]
+          },
+          "Status": {
+            "type": "select",
+            "options": ["Planning", "In Progress", "Deployed", "Failed", "Rollback"]
+          },
+          "Platform": {
+            "type": "select",
+            "options": ["Local", "Render", "AWS", "Other"]
+          },
+          "Version": {
+            "type": "rich_text",
+            "description": "Application version deployed"
+          },
+          "Deployment Date": {
+            "type": "date",
+            "description": "When the deployment was initiated"
+          },
+          "URL": {
+            "type": "url",
+            "description": "Live application URL"
+          },
+          "Health Status": {
+            "type": "select",
+            "options": ["Healthy", "Degraded", "Unhealthy", "Unknown"]
+          },
+          "Features": {
+            "type": "multi_select",
+            "options": [
+              "Dynamic Pricing",
+              "KaAni Integration",
+              "Logistics",
+              "AI Diagnosis",
+              "AgScore Assessment",
+              "A/B Testing",
+              "Health Monitoring",
+              "Load Balancing",
+              "Auto Scaling",
+              "Backup Recovery"
+            ]
+          },
+          "Database Type": {
+            "type": "select",
+            "options": ["SQLite", "PostgreSQL", "MySQL", "Other"]
+          },
+          "Notes": {
+            "type": "rich_text",
+            "description": "Deployment notes and observations"
+          },
+          "Last Health Check": {
+            "type": "date",
+            "description": "Last successful health check"
+          },
+          "Deployed By": {
+            "type": "rich_text",
+            "description": "Who initiated the deployment"
+          }
+        }
+      },
+      "feature_flags": {
+        "name": "MAGSASA-CARD Feature Flags",
+        "description": "Tracks feature enablement across environments",
+        "properties": {
+          "Feature Name": {
+            "type": "title",
+            "description": "Name of the feature"
+          },
+          "Development": {
+            "type": "checkbox",
+            "description": "Enabled in development"
+          },
+          "Staging": {
+            "type": "checkbox",
+            "description": "Enabled in staging"
+          },
+          "Production": {
+            "type": "checkbox",
+            "description": "Enabled in production"
+          },
+          "Description": {
+            "type": "rich_text",
+            "description": "Feature description and purpose"
+          },
+          "Dependencies": {
+            "type": "rich_text",
+            "description": "Required dependencies or prerequisites"
+          },
+          "Risk Level": {
+            "type": "select",
+            "options": ["Low", "Medium", "High", "Critical"]
+          },
+          "Last Updated": {
+            "type": "date",
+            "description": "When the feature flag was last modified"
+          }
+        }
+      },
+      "infrastructure_monitoring": {
+        "name": "MAGSASA-CARD Infrastructure",
+        "description": "Monitors infrastructure components and health",
+        "properties": {
+          "Component": {
+            "type": "title",
+            "description": "Infrastructure component name"
+          },
+          "Type": {
+            "type": "select",
+            "options": ["Application", "Database", "Cache", "Load Balancer", "CDN", "Storage", "Monitoring"]
+          },
+          "Environment": {
+            "type": "select",
+            "options": ["Development", "Staging", "Production"]
+          },
+          "Status": {
+            "type": "select",
+            "options": ["Online", "Offline", "Degraded", "Maintenance"]
+          },
+          "Provider": {
+            "type": "select",
+            "options": ["Local", "Render", "AWS", "Google Cloud", "Azure", "Other"]
+          },
+          "URL/Endpoint": {
+            "type": "url",
+            "description": "Access URL or endpoint"
+          },
+          "Last Check": {
+            "type": "date",
+            "description": "Last health check timestamp"
+          },
+          "Uptime": {
+            "type": "rich_text",
+            "description": "Current uptime percentage"
+          },
+          "Notes": {
+            "type": "rich_text",
+            "description": "Additional notes and observations"
+          }
+        }
+      }
+    },
+    "automation": {
+      "webhook_endpoints": {
+        "deployment_updates": "/api/notion/deployment-update",
+        "health_checks": "/api/notion/health-update",
+        "feature_flags": "/api/notion/feature-update"
+      },
+      "sync_frequency": "hourly",
+      "auto_update_fields": [
+        "Health Status",
+        "Last Health Check",
+        "Uptime",
+        "Status"
+      ],
+      "notification_triggers": [
+        "deployment_failed",
+        "health_check_failed",
+        "environment_down",
+        "feature_flag_changed"
+      ]
+    },
+    "setup_instructions": {
+      "step_1": {
+        "title": "Create Notion Integration",
+        "description": "Create a new integration in Notion workspace",
+        "url": "https://www.notion.so/my-integrations",
+        "actions": [
+          "Go to https://www.notion.so/my-integrations",
+          "Click 'New integration'",
+          "Name: 'MAGSASA-CARD Deployment Tracker'",
+          "Select workspace",
+          "Copy the Internal Integration Token"
+        ]
+      },
+      "step_2": {
+        "title": "Create Databases",
+        "description": "Create the required databases in Notion",
+        "actions": [
+          "Create a new page in Notion",
+          "Add a database for 'Deployment Tracking'",
+          "Add a database for 'Feature Flags'",
+          "Add a database for 'Infrastructure Monitoring'",
+          "Configure properties as specified in this file"
+        ]
+      },
+      "step_3": {
+        "title": "Share Databases with Integration",
+        "description": "Grant integration access to databases",
+        "actions": [
+          "Open each database",
+          "Click 'Share' button",
+          "Invite the integration by name",
+          "Grant 'Edit' permissions"
+        ]
+      },
+      "step_4": {
+        "title": "Configure Environment Variables",
+        "description": "Set up integration credentials",
+        "environment_variables": {
+          "NOTION_API_KEY": "Internal Integration Token from step 1",
+          "NOTION_DEPLOYMENT_DB_ID": "Database ID for deployment tracking",
+          "NOTION_FEATURES_DB_ID": "Database ID for feature flags",
+          "NOTION_INFRASTRUCTURE_DB_ID": "Database ID for infrastructure monitoring"
+        }
+      },
+      "step_5": {
+        "title": "Test Integration",
+        "description": "Verify the integration is working",
+        "test_commands": [
+          "python deployment/scripts/test-notion-integration.py",
+          "curl -X POST http://localhost:5000/api/notion/test"
+        ]
+      }
+    },
+    "sample_data": {
+      "deployment_tracking": [
+        {
+          "Environment": "Development",
+          "Status": "Deployed",
+          "Platform": "Local",
+          "Version": "2.1.0",
+          "URL": "http://localhost:5000",
+          "Health Status": "Healthy",
+          "Features": ["Dynamic Pricing", "KaAni Integration", "AI Diagnosis"],
+          "Database Type": "SQLite",
+          "Notes": "Local development environment with full feature set",
+          "Deployed By": "Manus AI"
+        },
+        {
+          "Environment": "Staging",
+          "Status": "Planning",
+          "Platform": "Render",
+          "Version": "2.1.0",
+          "URL": "https://magsasa-card-api-staging.onrender.com",
+          "Health Status": "Unknown",
+          "Features": ["Dynamic Pricing", "KaAni Integration", "AI Diagnosis", "Health Monitoring"],
+          "Database Type": "SQLite",
+          "Notes": "Staging environment on Render free tier",
+          "Deployed By": "Manus AI"
+        },
+        {
+          "Environment": "Production",
+          "Status": "Planning",
+          "Platform": "AWS",
+          "Version": "2.1.0",
+          "URL": "https://api.magsasa-card.com",
+          "Health Status": "Unknown",
+          "Features": ["Dynamic Pricing", "KaAni Integration", "AI Diagnosis", "Health Monitoring", "Load Balancing", "Auto Scaling"],
+          "Database Type": "PostgreSQL",
+          "Notes": "Production environment with full enterprise features",
+          "Deployed By": "Manus AI"
+        }
+      ],
+      "feature_flags": [
+        {
+          "Feature Name": "KaAni Integration",
+          "Development": true,
+          "Staging": true,
+          "Production": true,
+          "Description": "AI-powered agricultural diagnosis and recommendations",
+          "Dependencies": "OpenAI API, Google AI API",
+          "Risk Level": "Medium"
+        },
+        {
+          "Feature Name": "AgScore Assessment",
+          "Development": true,
+          "Staging": true,
+          "Production": true,
+          "Description": "BSP-compliant farmer risk assessment system",
+          "Dependencies": "KaAni Integration, Database",
+          "Risk Level": "High"
+        },
+        {
+          "Feature Name": "A/B Testing",
+          "Development": true,
+          "Staging": true,
+          "Production": false,
+          "Description": "OpenAI vs Google AI comparison testing",
+          "Dependencies": "Both AI providers",
+          "Risk Level": "Low"
+        }
+      ],
+      "infrastructure_monitoring": [
+        {
+          "Component": "MAGSASA-CARD API",
+          "Type": "Application",
+          "Environment": "Development",
+          "Status": "Online",
+          "Provider": "Local",
+          "URL/Endpoint": "http://localhost:5000"
+        },
+        {
+          "Component": "SQLite Database",
+          "Type": "Database",
+          "Environment": "Development",
+          "Status": "Online",
+          "Provider": "Local",
+          "URL/Endpoint": "src/database/dynamic_pricing.db"
+        }
+      ]
+    }
+  }
+}
