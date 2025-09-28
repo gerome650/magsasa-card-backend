@@ -23,39 +23,136 @@ def create_app():
     app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'magsasa-card-secret-key-2025')
     app.config['DATABASE_PATH'] = 'src/database/dynamic_pricing.db'
     
-    # Import and register blueprints
+    # Import and register blueprints with comprehensive debugging
+    
+    print("🔍 Starting blueprint registration process...")
+    print(f"📁 Current working directory: {os.getcwd()}")
+    print(f"🐍 Python path: {sys.path}")
+    
+    # Check if src directory exists
+    src_path = os.path.join(os.getcwd(), 'src')
+    routes_path = os.path.join(src_path, 'routes')
+    print(f"📂 src directory exists: {os.path.exists(src_path)}")
+    print(f"📂 routes directory exists: {os.path.exists(routes_path)}")
+    
+    if os.path.exists(routes_path):
+        print(f"📄 Files in routes directory: {os.listdir(routes_path)}")
+    
+    blueprint_status = {}
     
     # Health endpoints (always available)
+    print("🏥 Attempting to register health blueprint...")
     try:
         from src.routes.health import health_bp
         app.register_blueprint(health_bp)
-        print("✅ Health blueprint registered")
+        blueprint_status['health'] = 'success'
+        print("✅ Health blueprint registered successfully")
+        print(f"   Routes: {[rule.rule for rule in app.url_map.iter_rules() if rule.endpoint.startswith('health.')]}")
     except ImportError as e:
+        blueprint_status['health'] = f'import_error: {str(e)}'
         print(f"❌ Failed to import health blueprint: {e}")
+        print(f"   Trying alternative import path...")
+        try:
+            sys.path.append(os.path.join(os.getcwd(), 'src'))
+            from routes.health import health_bp
+            app.register_blueprint(health_bp)
+            blueprint_status['health'] = 'success_alt_path'
+            print("✅ Health blueprint registered with alternative path")
+        except Exception as e2:
+            blueprint_status['health'] = f'failed_both_paths: {str(e2)}'
+            print(f"❌ Alternative path also failed: {e2}")
+    except Exception as e:
+        blueprint_status['health'] = f'registration_error: {str(e)}'
+        print(f"❌ Failed to register health blueprint: {e}")
     
     # Basic API endpoints (always available)
+    print("🔌 Attempting to register API blueprint...")
     try:
         from src.routes.api import api_bp
         app.register_blueprint(api_bp)
-        print("✅ API blueprint registered")
+        blueprint_status['api'] = 'success'
+        print("✅ API blueprint registered successfully")
+        print(f"   Routes: {[rule.rule for rule in app.url_map.iter_rules() if rule.endpoint.startswith('api.')]}")
     except ImportError as e:
+        blueprint_status['api'] = f'import_error: {str(e)}'
         print(f"❌ Failed to import API blueprint: {e}")
+        try:
+            from routes.api import api_bp
+            app.register_blueprint(api_bp)
+            blueprint_status['api'] = 'success_alt_path'
+            print("✅ API blueprint registered with alternative path")
+        except Exception as e2:
+            blueprint_status['api'] = f'failed_both_paths: {str(e2)}'
+            print(f"❌ Alternative path also failed: {e2}")
+    except Exception as e:
+        blueprint_status['api'] = f'registration_error: {str(e)}'
+        print(f"❌ Failed to register API blueprint: {e}")
     
     # Dynamic pricing (optional)
+    print("💰 Attempting to register dynamic pricing blueprint...")
     try:
         from src.routes.dynamic_pricing import dynamic_pricing_bp
         app.register_blueprint(dynamic_pricing_bp)
-        print("✅ Dynamic pricing blueprint registered")
+        blueprint_status['dynamic_pricing'] = 'success'
+        print("✅ Dynamic pricing blueprint registered successfully")
+        print(f"   Routes: {[rule.rule for rule in app.url_map.iter_rules() if rule.endpoint.startswith('dynamic_pricing.')]}")
     except ImportError as e:
+        blueprint_status['dynamic_pricing'] = f'import_error: {str(e)}'
         print(f"❌ Failed to import dynamic pricing blueprint: {e}")
+        try:
+            from routes.dynamic_pricing import dynamic_pricing_bp
+            app.register_blueprint(dynamic_pricing_bp)
+            blueprint_status['dynamic_pricing'] = 'success_alt_path'
+            print("✅ Dynamic pricing blueprint registered with alternative path")
+        except Exception as e2:
+            blueprint_status['dynamic_pricing'] = f'failed_both_paths: {str(e2)}'
+            print(f"❌ Alternative path also failed: {e2}")
+    except Exception as e:
+        blueprint_status['dynamic_pricing'] = f'registration_error: {str(e)}'
+        print(f"❌ Failed to register dynamic pricing blueprint: {e}")
     
     # KaAni integration (optional)
+    print("🌾 Attempting to register KaAni blueprint...")
     try:
         from src.routes.kaani_routes import kaani_bp
         app.register_blueprint(kaani_bp)
-        print("✅ KaAni blueprint registered")
+        blueprint_status['kaani'] = 'success'
+        print("✅ KaAni blueprint registered successfully")
+        print(f"   Routes: {[rule.rule for rule in app.url_map.iter_rules() if rule.endpoint.startswith('kaani.')]}")
     except ImportError as e:
+        blueprint_status['kaani'] = f'import_error: {str(e)}'
         print(f"❌ Failed to import KaAni blueprint: {e}")
+        try:
+            from routes.kaani_routes import kaani_bp
+            app.register_blueprint(kaani_bp)
+            blueprint_status['kaani'] = 'success_alt_path'
+            print("✅ KaAni blueprint registered with alternative path")
+        except Exception as e2:
+            blueprint_status['kaani'] = f'failed_both_paths: {str(e2)}'
+            print(f"❌ Alternative path also failed: {e2}")
+    except Exception as e:
+        blueprint_status['kaani'] = f'registration_error: {str(e)}'
+        print(f"❌ Failed to register KaAni blueprint: {e}")
+    
+    # Print final blueprint registration summary
+    print("📊 Blueprint Registration Summary:")
+    for blueprint_name, status in blueprint_status.items():
+        print(f"   {blueprint_name}: {status}")
+    
+    print(f"🎯 Total registered blueprints: {len(app.blueprints)}")
+    print(f"📋 Registered blueprint names: {list(app.blueprints.keys())}")
+    print(f"🛣️  Total routes: {len(list(app.url_map.iter_rules()))}")
+    
+    # Store blueprint status for API response
+    app.config['BLUEPRINT_STATUS'] = blueprint_status
+    
+    # Add debug routes for troubleshooting
+    try:
+        from debug_routes import add_debug_routes
+        add_debug_routes(app)
+        print("✅ Debug routes added successfully")
+    except Exception as e:
+        print(f"❌ Failed to add debug routes: {e}")
     
     # Root endpoint with comprehensive API information
     @app.route('/')
@@ -75,7 +172,12 @@ def create_app():
             "deployment_info": {
                 "kaani_integration": kaani_enabled,
                 "registered_blueprints": registered_blueprints,
-                "deployment_timestamp": datetime.utcnow().isoformat()
+                "deployment_timestamp": datetime.utcnow().isoformat(),
+                "blueprint_status": app.config.get('BLUEPRINT_STATUS', {}),
+                "total_routes": len(list(app.url_map.iter_rules())),
+                "working_directory": os.getcwd(),
+                "src_directory_exists": os.path.exists(os.path.join(os.getcwd(), 'src')),
+                "routes_directory_exists": os.path.exists(os.path.join(os.getcwd(), 'src', 'routes'))
             }
         }
         
