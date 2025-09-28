@@ -1,0 +1,31 @@
+{
+  "project": "MAGSASA-CARD AgriTech Platform",
+  "last_updated": "2025-09-28",
+  "environments": {
+    "development": {
+      "status": "active",
+      "url": "http://localhost:5001",
+      "provider": "local",
+      "database": "sqlite",
+      "last_deployed": "2025-09-28"
+    },
+    "staging": {
+      "status": "ready_to_deploy",
+      "provider": "render",
+      "url": "pending_deployment",
+      "database": "postgresql",
+      "render_service": "magsasa-card-staging"
+    },
+    "production": {
+      "status": "planned",
+      "provider": "aws",
+      "url": "custom_domain_planned",
+      "database": "postgresql"
+    }
+  },
+  "notion_integration": {
+    "status": "planned",
+    "database_id": "to_be_created",
+    "automation": "deployment_tracking"
+  }
+}
