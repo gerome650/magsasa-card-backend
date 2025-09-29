@@ -1,0 +1,16 @@
+NOTION_TOKEN=ntn_12325578650QWfNGs2YAkOSZ5j27AEZ1vnLEGqKgBU4d0
+
+# MAGSASA-CARD Development Integration
+# Created: September 29, 2025
+# Associated workspace: AgSense
+# Integration ID: c08306d0-8cde-4bf6-8066-e378f5d0fd25
+# 
+# This token provides access to:
+# - Read content
+# - Update content  
+# - Insert content
+#
+# Next steps:
+# 1. Add this token to GitHub Secrets as NOTION_TOKEN
+# 2. Create the 4 required databases in AgSense ERP workspace
+# 3. Connect databases to this integration
