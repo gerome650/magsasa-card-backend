@@ -10,7 +10,7 @@ services:
     buildCommand: |
       pip install --upgrade pip
       pip install -r requirements_production.txt
-    startCommand: gunicorn --bind 0.0.0.0:$PORT app_production:app --workers 2 --timeout 120
+    startCommand: gunicorn --bind 0.0.0.0:$PORT app_consolidated:app --workers 2 --timeout 120
     envVars:
       - key: ENVIRONMENT
         value: staging
@@ -44,7 +44,8 @@ services:
     # Build settings
     buildFilter:
       paths:
-        - app_production.py
+        - app_consolidated.py
+        - app.py
         - requirements_production.txt
         - src/**
         - deployment/render/**
